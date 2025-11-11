@@ -46,9 +46,9 @@ class User extends Authenticatable
     // Relationships
 
      public function roles()
-{
-    return $this->belongsToMany(\App\Models\Role::class, 'role_user', 'user_id', 'role_id');
-
+{       
+     // belongsToMany(RelatedModel::class, pivot_table_name, foreign_key_on_pivot_for_this_model, foreign_key_on_pivot_for_related_model)
+        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
       //  return $this->belongsToMany(Role::class,'role_user');
     }
 

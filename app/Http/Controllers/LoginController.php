@@ -24,32 +24,25 @@ class LoginController extends Controller
             $request->session()->regenerate();
             
             // Redirect to role-based dashboard
+           // $user = Auth::user();
             $user = Auth::user();
-           // dd ($user);
-           // $roles = $user->roles;
-            //dd ($roles);
-            echo "Admin". $user->isAdmin();
-            echo "Teacher" . $user->isTeacher();
-          die; 
-         
-        if ($user->isAdmin()) {
-            return redirect()->route('dashboard')
+            $roles = $user->roles;
+
+         foreach ($roles as $role) {
+            if ($role->name == 'admin'){
+         return redirect()->route('dashboard')
                 ->with('success', 'Welcome back, Administrator!');
         }
-        elseif ($user->isTeacher()) {
-            //echo "hello";
-            //die;
+        elseif($role->name == 'teacher'){
             return redirect()->route('teacher.dashboard')
                 ->with('success', 'Welcome back, Teacher!');
         } 
-            elseif ($user->isStudent()) {
+            elseif($role->name == 'student') {
             return redirect()->route('student.dashboard')
                 ->with('success', 'Welcome back, Student!');
         }
-           
-              return redirect()->route('dashboard')
-            ->with('success', 'Welcome back!');
-    }  
+            }
+        }
 
         return back()->withErrors([
         'email' => 'The provided credentials do not match our records.',

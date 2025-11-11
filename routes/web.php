@@ -45,16 +45,17 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'resetPassword
 // Dashboard routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard')->middleware('role:admin');
+    Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
+});
 
-
-Route::middleware(['auth', 'role:teacher'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/teacher/dashboard', [DashboardController::class, 'teacherDashboard'])
         ->name('teacher.dashboard');
 });
 
-
-    Route::get('/student/dashboard', [DashboardController::class, 'studentDashboard'])->name('student.dashboard')->middleware('role:student');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/student/dashboard', [DashboardController::class, 'studentDashboard'])
+        ->name('student.dashboard');
 });
 
 // Setup routes (accessible to all authenticated users for initial setup)
