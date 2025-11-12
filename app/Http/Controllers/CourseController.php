@@ -22,7 +22,6 @@ class CourseController extends Controller
     return response()->json($course);
      $course = Course::all();
     }
-    
 
     public function create()
     {

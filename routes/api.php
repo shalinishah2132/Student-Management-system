@@ -39,4 +39,12 @@ Route::middleware('api.token')->group(function () {
     //enrollments
     Route::get('/enrollments', [EnrollmentController::class, 'allenrollment']);
     Route::get('/enrollments/{id}', [EnrollmentController::class, 'showenrollment']);
+
+    //create students
+     Route::post('/students/create', [StudentController::class, 'studentstore']);
+   
+   
+    //edit students
+     Route::put('/students/create', [StudentController::class, 'studentstore']);
+
 });
