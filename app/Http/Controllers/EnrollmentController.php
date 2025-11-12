@@ -63,6 +63,8 @@ class EnrollmentController extends Controller
         return response()->json(['error' => 'Enrollment not found'], 404);
     }
     $enrollment->load(['student', 'course']);
+     $enrollment->created_at = $enrollment->created_at->format('Y-m-d H:i:s');
+    $enrollment->updated_at = $enrollment->updated_at->format('Y-m-d H:i:s');
     return view('enrollments.show', compact('enrollment'));
     }
 
@@ -70,10 +72,13 @@ class EnrollmentController extends Controller
     public function showenrollment($id)
     {
     $enrollment = Enrollment::find($id);
+     $enrollment->created_at = $enrollment->created_at->format('Y-m-d H:i:s');
+    $enrollment->updated_at = $enrollment->updated_at->format('Y-m-d H:i:s');
     if (!$enrollment) {
         return response()->json(['error' => 'Enrollment not found'], 404);
     }
     $enrollment->load(['student', 'course']);
+   
     return response()->json($enrollment);
     }
 
