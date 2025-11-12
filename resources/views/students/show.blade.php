@@ -169,7 +169,7 @@
         <div class="content">
             <div class="detail-row">
                 <span class="detail-label">Student ID:</span>
-                <span class="detail-value student-id">#{{ $student->id }}</span>
+                <span class="detail-value student-id">{{ $student->id }}</span>
             </div>
             
             <div class="detail-row">

@@ -11,8 +11,15 @@ class StudentController extends Controller
     {
         $students = Student::orderBy('total_marks', 'desc')->get();
         return view('students.index', compact('students'));
+        $students = Student::all();
     }
 
+     public function allstudent()
+    {
+        $students = Student::orderBy('total_marks', 'desc')->get();
+        $students = Student::all();
+        return response()->json($students);
+    }
     public function create()
     {
         return view('students.create');
@@ -42,10 +49,32 @@ class StudentController extends Controller
         return redirect()->route('students.index')->with('success', 'Student added successfully!');
     }
 
-    public function show(Student $student)
-    {
-        return view('students.show', compact('student'));
+    public function show($id)
+{
+    $student = Student::find($id);
+    $student->created_at = $student->created_at->format('Y-m-d H:i:s');
+    $student->updated_at = $student->updated_at->format('Y-m-d H:i:s');
+ 
+    if (!$student) {
+        return response()->json(['error' => 'Student not found'], 404);
     }
+     return view('students.show', compact('student'));
+      // return response()->json($student);
+}
+ 
+public function showstudent($id)
+{
+    $student = Student::find($id);
+    $student->created_at = $student->created_at->format('Y-m-d H:i:s');
+    $student->updated_at = $student->updated_at->format('Y-m-d H:i:s');
+ 
+    if (!$student) {
+        return response()->json(['error' => 'Student not found'], 404);
+    }
+   //  return view('students.show', compact('student'));
+       return response()->json($student);
+}
+ 
 
     public function edit(Student $student)
     {

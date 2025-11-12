@@ -23,9 +23,10 @@
     <body class="antialiased">
         <div style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
             <div style="text-align: center; color: white; margin-bottom: 40px;">
+                
                 <h1 style="font-size: 3rem; margin-bottom: 20px;">Student Management System</h1>
                 <p style="font-size: 1.2rem; margin-bottom: 40px;">Manage your students efficiently and securely</p>
-                
+               
                 <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                     @auth
                         <a href="{{ route('dashboard') }}" style="background: white; color:

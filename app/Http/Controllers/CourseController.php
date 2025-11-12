@@ -7,11 +7,22 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
+    //web
     public function index()
-    {
-        $courses = Course::orderBy('title')->get();
-        return view('courses.index', compact('courses'));
+   {
+    $courses = Course::orderBy('title')->get();
+    return view('courses.index', compact('course'));
+    $courses = Course::all();
+  }
+
+    //api
+     public function allcourse()
+   {
+    $course = Course::orderBy('title')->get();
+    return response()->json($course);
+     $course = Course::all();
     }
+    
 
     public function create()
     {
@@ -31,9 +42,28 @@ class CourseController extends Controller
         return redirect()->route('courses.index')->with('success', 'Course created successfully!');
     }
 
-    public function show(Course $course)
-    {
-        return view('courses.show', compact('course'));
+    public function show($id)
+     {
+        $course = Course::find($id);
+        $course->created_at = $course->created_at->format('Y-m-d H:i:s');
+        $course->updated_at = $course->updated_at->format('Y-m-d H:i:s');
+        if (!$course) 
+            {
+              return response()->json(['error' => 'Course not found'], 404);
+            }
+      return view('courses.show', compact('course'));
+    }
+
+     public function showcourse($id)
+     {
+        $course = Course::find($id);
+        $course->created_at = $course->created_at->format('Y-m-d H:i:s');
+        $course->updated_at = $course->updated_at->format('Y-m-d H:i:s');
+        if (!$course) 
+            {
+              return response()->json(['error' => 'Course not found'], 404);
+            }
+        return response()->json($course);
     }
 
     public function edit(Course $course)

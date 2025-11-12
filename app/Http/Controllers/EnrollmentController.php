@@ -8,11 +8,23 @@ use App\Models\Course;
 use Illuminate\Http\Request;
 
 class EnrollmentController extends Controller
-{
+{   
+    //web
     public function index()
     {
-        $enrollments = Enrollment::with(['student', 'course'])->orderBy('created_at', 'desc')->get();
+         $enrollments = Enrollment::with(['student', 'course'])
+        ->orderBy('created_at', 'desc')
+        ->get();
         return view('enrollments.index', compact('enrollments'));
+    }
+
+     //api 
+     public function allenrollment()
+    {
+        $enrollments = Enrollment::with(['student', 'course'])
+        ->orderBy('created_at', 'desc')
+        ->get();
+      return response()->json($enrollments);
     }
 
     public function create()
@@ -43,11 +55,28 @@ class EnrollmentController extends Controller
         return redirect()->route('enrollments.index')->with('success', 'Student enrolled successfully!');
     }
 
-    public function show(Enrollment $enrollment)
+//web
+    public function show($id)
     {
-        $enrollment->load(['student', 'course']);
-        return view('enrollments.show', compact('enrollment'));
+    $enrollment = Enrollment::find($id);
+    if (!$enrollment) {
+        return response()->json(['error' => 'Enrollment not found'], 404);
     }
+    $enrollment->load(['student', 'course']);
+    return view('enrollments.show', compact('enrollment'));
+    }
+
+//api
+    public function showenrollment($id)
+    {
+    $enrollment = Enrollment::find($id);
+    if (!$enrollment) {
+        return response()->json(['error' => 'Enrollment not found'], 404);
+    }
+    $enrollment->load(['student', 'course']);
+    return response()->json($enrollment);
+    }
+
 
     public function destroy(Enrollment $enrollment)
     {

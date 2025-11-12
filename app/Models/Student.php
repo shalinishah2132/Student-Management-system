@@ -17,9 +17,16 @@ class Student extends Model
         'rank',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
     protected $casts = [
         'total_marks' => 'integer',
-    ];
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+   ];
 
     // Accessor to get rank with proper formatting
     public function getRankDisplayAttribute()
@@ -43,7 +50,6 @@ class Student extends Model
     public static function updateRanks()
     {
         $students = self::orderBy('total_marks', 'desc')->get();
-        
         foreach ($students as $index => $student) {
             $rank = match(true) {
                 $student->total_marks >= 400 => 'First Class',
