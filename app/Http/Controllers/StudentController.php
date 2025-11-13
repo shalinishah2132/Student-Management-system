@@ -84,7 +84,7 @@ public function studentstore(Request $request)
      return response()->json($student);
 }
 
-
+//web
     public function show($id)
 {
     $student = Student::find($id);
@@ -97,7 +97,7 @@ public function studentstore(Request $request)
      return view('students.show', compact('student'));
      
 }
- 
+ //api
 public function showstudent($id)
 {
     $student = Student::find($id);
@@ -111,12 +111,11 @@ public function showstudent($id)
        return response()->json($student);
 }
  
-
-    public function edit(Student $student)
+   public function edit(Student $student)
     {
         return view('students.edit', compact('student'));
     }
-
+   //web
     public function update(Request $request, Student $student)
     {
         $request->validate([
@@ -140,10 +139,61 @@ public function showstudent($id)
 
         return redirect()->route('students.index')->with('success', 'Student updated successfully!');
     }
+    //api
+ public function studentupdate(Request $request, $id)
+{
+    // ✅ Find the student
+    $student = Student::find($id);
 
+    // ✅ Validate input
+    $request->validate([
+        'student_name'  => 'sometimes|required|string|max:255',
+        'student_email' => 'sometimes|required|email|unique:students,student_email,' . $id,
+        'student_phone' => 'nullable|string|max:20',
+        'total_marks'   => 'sometimes|required|integer|min:0|max:500',
+    ]);
+
+    // ✅ Update student fields
+    $student->update([
+        'student_name'  => $request->student_name ?? $student->student_name,
+        'student_email' => $request->student_email ?? $student->student_email,
+        'student_phone' => $request->student_phone ?? $student->student_phone,
+        'total_marks'   => $request->total_marks ?? $student->total_marks,
+    ]);
+
+    // ✅ Recalculate rank if total_marks changed
+    $rank = match (true) {
+        $student->total_marks >= 400 => 'First Class',
+        $student->total_marks >= 300 => 'Second Class',
+        $student->total_marks >= 200 => 'Third Class',
+        default => 'Fail',
+    };
+
+    $student->update(['rank' => $rank]);
+
+    // ✅ Return response
+     return response()->json($student);
+  
+}
+//web
     public function destroy(Student $student)
     {
         $student->delete();
         return redirect()->route('students.index')->with('success', 'Student deleted successfully!');
     }
+
+//api
+public function studentdelete($id)
+{
+    $student = Student::find($id);
+    // Delete the record
+    $student->delete();
+
+    // Return success message
+   return response()->json([
+        'message' => 'Student deleted successfully'
+   ]);
+}
+
+
 }

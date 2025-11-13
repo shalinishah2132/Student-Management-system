@@ -33,7 +33,7 @@ class EnrollmentController extends Controller
         $courses = Course::orderBy('title')->get();
         return view('enrollments.create', compact('students', 'courses'));
     }
-
+//web
     public function store(Request $request)
     {
         $request->validate([
@@ -51,9 +51,29 @@ class EnrollmentController extends Controller
         }
 
         Enrollment::create($request->all());
-
-        return redirect()->route('enrollments.index')->with('success', 'Student enrolled successfully!');
+              return redirect()->route('enrollments.index')->with('success', 'Student enrolled successfully!');
     }
+    public function enrollmentstore(Request $request)
+{
+    $request->validate([
+        'student_id' => 'required|exists:students,id',
+        'course_id'  => 'required|exists:courses,id',
+    ]);
+
+    // Check if enrollment already exists
+    $existingEnrollment = Enrollment::where('student_id', $request->student_id)
+        ->where('course_id', $request->course_id)
+        ->first();
+
+    $enrollment = Enrollment::create([
+        'student_id' => $request->student_id,
+        'course_id'  => $request->course_id,
+    ]);
+
+    return response()->json($enrollment);
+}
+
+
 
 //web
     public function show($id)
@@ -78,30 +98,54 @@ class EnrollmentController extends Controller
         return response()->json(['error' => 'Enrollment not found'], 404);
     }
     $enrollment->load(['student', 'course']);
-   
     return response()->json($enrollment);
     }
 
-
+//web
     public function destroy(Enrollment $enrollment)
     {
         $enrollment->delete();
         return redirect()->route('enrollments.index')->with('success', 'Enrollment removed successfully!');
     }
 
-    // Method to show enrollments for a specific student
+    //api
+      public function enrollmentdelete(Enrollment $enrollment)
+    {
+        $enrollment->delete();
+         return response()->json([
+        'message' => 'enrollment deleted successfully'
+   ]);
+    }
+
+
+    // Method to show enrollments for a specific student 
+    //web
     public function studentEnrollments(Student $student)
     {
         $enrollments = $student->enrollments()->with('course')->get();
         return view('enrollments.student', compact('student', 'enrollments'));
     }
+//api
+    public function allstudentEnrollments(Student $student)
+    {
+        $enrollments = $student->enrollments()->with('course')->get();
+        return response()->json($enrollments);
+    }
 
     // Method to show enrollments for a specific course
+    //web
     public function courseEnrollments(Course $course)
     {
         $enrollments = $course->enrollments()->with('student')->get();
         return view('enrollments.course', compact('course', 'enrollments'));
     }
+//api
+     public function allcourseEnrollments(Course $course)
+    {
+        $enrollments = $course->enrollments()->with('student')->get();
+         return response()->json($enrollments);
+     }
+
 
     // AJAX method to get available courses for a specific student
     public function getAvailableCourses(Request $request)

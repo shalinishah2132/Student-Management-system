@@ -194,7 +194,10 @@
                         @foreach($courses as $course)
                             <tr>
                                 <td><strong>{{ $course->title }}</strong></td>
-                                <td>{{ Str::limit($course->description, 50) ?: 'No description' }}</td>
+                                <td>
+                                    {{ $course->description ? Str::limit($course->description, 50) : 'No description' }}
+                                </td>
+
                                 <td>
                                     @if($course->duration)
                                         <span class="duration-badge">{{ $course->duration }}</span>
