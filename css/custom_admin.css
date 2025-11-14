@@ -1,0 +1,15 @@
+.pagination .page-item.active .page-link {
+    background-color: #FADADD;
+    border-color: #FADADD;
+    color: #374151;
+}
+
+.pagination .page-link {
+    color: #d63384; /* A darker pink for better readability */
+}
+
+.pagination .page-link:hover {
+    background-color: #FADADD;
+    border-color: #FADADD;
+    color: #374151;
+}

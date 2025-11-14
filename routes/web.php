@@ -72,6 +72,14 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     // Student routes - All authenticated users can access
     Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+        
+    // Student Address Routes
+    Route::get('/students/{student}/address/edit', [StudentController::class, 'editAddress'])
+        ->name('students.edit-address');
+    Route::put('/students/{student}/address', [StudentController::class, 'updateAddress'])
+        ->name('students.update-address');
+
+
     Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
     Route::post('/students', [StudentController::class, 'store'])->name('students.store');
     Route::get('/students/{student}', [StudentController::class, 'show'])->name('students.show');
@@ -107,5 +115,6 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/users/{user}/roles', [UserController::class, 'updateRoles'])->name('users.update-roles');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
+
 });
 

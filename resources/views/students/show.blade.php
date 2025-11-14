@@ -193,7 +193,7 @@
             </div>
             
             <div class="detail-row">
-                <span class="detail-label">Academic Rank:</span>
+                <span class="detail-label">Rank:</span>
                 <span class="detail-value">
                     <span class="rank-badge 
                         @if($student->rank == 'First Class') rank-first
@@ -223,6 +223,8 @@
             <div class="action-buttons">
                 <a href="{{ route('students.index') }}" class="btn btn-secondary">← Back to List</a>
                 <a href="{{ route('students.edit', $student) }}" class="btn btn-warning">Edit Student</a>
+                <a href="{{ route('students.edit-address', $student) }}" class="btn" style="background: #17a2b8; color: white;">Edit Address</a>
+
                 <form action="{{ route('students.destroy', $student) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this student?')">
                     @csrf
                     @method('DELETE')

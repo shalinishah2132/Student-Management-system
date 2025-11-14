@@ -9,13 +9,17 @@ class Student extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'student_name',
-        'student_email',
-        'student_phone',
-        'total_marks',
-        'rank',
-    ];
+       protected $fillable = [
+    'student_name',
+    'student_email',
+    'student_phone',
+    'total_marks',
+    'rank',
+    'address',
+    'city',
+    'state',
+    'pincode',
+];
 
     /**
      * The attributes that should be cast.

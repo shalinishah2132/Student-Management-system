@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
+
 class StudentController extends Controller
 {  //web
     public function index()
@@ -127,7 +128,7 @@ public function showstudent($id)
 
         $student->update($request->all());
         
-        // Auto-assign rank based on marks
+        // Update rank based on marks
         $rank = match(true) {
             $student->total_marks >= 400 => 'First Class',
             $student->total_marks >= 300 => 'Second Class',
@@ -137,8 +138,10 @@ public function showstudent($id)
         
         $student->update(['rank' => $rank]);
 
-        return redirect()->route('students.index')->with('success', 'Student updated successfully!');
+        return redirect()->route('students.index')
+            ->with('success', 'Student updated successfully');
     }
+
     //api
  public function studentupdate(Request $request, $id)
 {
@@ -195,5 +198,36 @@ public function studentdelete($id)
    ]);
 }
 
+/**
+ * Show the form for editing the student's address.
+ *
+ * @param  \App\Models\Student  $student
+ * @return \Illuminate\Http\Response
+ */
+public function editAddress(Student $student)
+{
+    return view('students.edit-address', compact('student'));
+}
 
+/**
+ * Update the student's address in storage.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @param  \App\Models\Student  $student
+ * @return \Illuminate\Http\Response
+ */
+public function updateAddress(Request $request, Student $student)
+{
+    $validated = $request->validate([
+        'address' => 'required|string|max:255',
+        'city' => 'required|string|max:100',
+        'state' => 'required|string|max:100',
+        'pincode' => 'required|string|max:20',
+    ]);
+
+    $student->update($validated);
+
+    return redirect()->route('students.show', $student->id)
+        ->with('success', 'Address updated successfully');
+}
 }
