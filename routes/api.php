@@ -45,7 +45,7 @@ Route::middleware('api.token')->group(function () {
     //enrollments
     Route::get('/enrollments', [EnrollmentController::class, 'allenrollment']);
     Route::get('/enrollments/{id}', [EnrollmentController::class, 'showenrollment']);
-    Route::post('/enrollment', [EnrollmentController::class, 'enrollmentstore']);  //create enrollments
+    Route::post('/enrollments/create', [EnrollmentController::class, 'enrollmentstore']);  //create enrollments
     Route::delete('/enrollments/{enrollment}', [EnrollmentController::class, 'enrollmentdelete']);  //delete enrollments
     Route::get('/students/{student}/courses', [EnrollmentController::class, 'allstudentEnrollments']); //list all courses of a student
     Route::get('/courses/{course}/students', [EnrollmentController::class, 'allcourseEnrollments']);//list all students of a course

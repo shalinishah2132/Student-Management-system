@@ -6,6 +6,8 @@ use App\Models\Enrollment;
 use App\Models\Student;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class EnrollmentController extends Controller
 {   
@@ -53,24 +55,61 @@ class EnrollmentController extends Controller
         Enrollment::create($request->all());
               return redirect()->route('enrollments.index')->with('success', 'Student enrolled successfully!');
     }
-    public function enrollmentstore(Request $request)
+
+public function enrollmentstore(Request $request)
 {
-    $request->validate([
-        'student_id' => 'required|exists:students,id',
-        'course_id'  => 'required|exists:courses,id',
-    ]);
+    try {
 
-    // Check if enrollment already exists
-    $existingEnrollment = Enrollment::where('student_id', $request->student_id)
-        ->where('course_id', $request->course_id)
-        ->first();
+        // Validate request
+        $validated = $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'course_id'  => 'required|exists:courses,id',
+        ], [
+            'student_id.required' => 'Student ID is required.',
+            'student_id.exists'   => 'The selected student does not exist.',
+            'course_id.required'  => 'Course ID is required.',
+            'course_id.exists'    => 'The selected course does not exist.',
+        ]);
 
-    $enrollment = Enrollment::create([
-        'student_id' => $request->student_id,
-        'course_id'  => $request->course_id,
-    ]);
+        // Check if enrollment already exists
+        $existingEnrollment = Enrollment::where('student_id', $validated['student_id'])
+            ->where('course_id', $validated['course_id'])
+            ->first();
 
-    return response()->json($enrollment);
+        if ($existingEnrollment) {
+            return response()->json([
+                'message' => 'The student is already enrolled in this course.',
+            ], 409); // Conflict
+        }
+
+        // Create enrollment
+        $enrollment = Enrollment::create($validated);
+
+        return response()->json([
+            'message' => 'Enrollment created successfully.',
+            'data'    => $enrollment
+        ], 201);
+
+    } catch (ValidationException $e) {
+
+        return response()->json([
+            'message' => 'Validation failed.',
+            'errors'  => $e->errors(),
+        ], 422);
+
+    } catch (ModelNotFoundException $e) {
+
+        return response()->json([
+            'message' => 'Related record not found.',
+        ], 404);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'message' => 'Something went wrong.',
+            'error'   => $e->getMessage(),
+        ], 500);
+    }
 }
 
 
@@ -109,14 +148,33 @@ class EnrollmentController extends Controller
     }
 
     //api
-      public function enrollmentdelete(Enrollment $enrollment)
-    {
-        $enrollment->delete();
-         return response()->json([
-        'message' => 'enrollment deleted successfully'
-   ]);
-    }
+ public function enrollmentdelete($id)
+{
+    try {
+        // Check if enrollment exists
+        $enrollment = Enrollment::findOrFail($id);
 
+        // Delete the record
+        $enrollment->delete();
+
+        return response()->json([
+            'message' => 'Enrollment deleted successfully.'
+        ], 200);
+
+    } catch (ModelNotFoundException $e) {
+
+        return response()->json([
+            'message' => 'Enrollment not found.'
+        ], 404);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'message' => 'Something went wrong.',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 
     // Method to show enrollments for a specific student 
     //web

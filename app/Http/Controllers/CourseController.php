@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Validation;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+
 
 class CourseController extends Controller
 {
@@ -43,17 +47,41 @@ class CourseController extends Controller
     }
 
     //api
-  public function coursestore(Request $request)
+public function coursestore(Request $request)
 {
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'duration' => 'nullable|string|max:255',
-    ]);
+    try {
+        // Validation
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'duration' => 'required|string|max:255',
+        ], [
+            'title.required' => 'Course title is required.',
+            'duration.required' => 'Course duration is required.',
+        ]);
 
-    $course = Course::create($request->all());
+        // Create course
+        $course = Course::create($validated);
 
-    return response()->json($course);
+        return response()->json([
+            'message' => 'Course created successfully.',
+            'data' => $course
+        ], 201);
+
+    } catch (Exception $e) {
+
+        return response()->json([
+            'message' => 'Validation failed.',
+            'errors' => $e->errors()
+        ], 422);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'message' => 'Something went wrong.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
 }
 
 
@@ -99,18 +127,51 @@ class CourseController extends Controller
 //api
 public function courseupdate(Request $request, $id)
 {
-    $course = Course::findOrFail($id);
+    try {
 
-    $request->validate([
-        'title' => 'sometimes|string|max:255',
-        'description' => 'sometimes|string',
-        'duration' => 'sometimes|string|max:255',
-    ]);
+        // Check if course exists
+        $course = Course::findOrFail($id);
 
-    $course->update($request->only(['title', 'description', 'duration']));
+        // Validation rules
+        $validated = $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|nullable|string',
+            'duration' => 'sometimes|required|string|max:255',
+        ], [
+            'title.required' => 'Course title is required when updating.',
+            'duration.required' => 'Course duration is required when updating.',
+        ]);
 
-    return response()->json($course);
+        // Update only validated values
+        $course->update($validated);
+
+        return response()->json([
+            'message' => 'Course updated successfully.',
+            'data' => $course
+        ], 200);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'message' => 'Validation failed.',
+            'errors' => $e->errors()
+        ], 422);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'message' => 'Course not found.'
+        ], 404);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'message' => 'Something went wrong.',
+            'error' => $e->getMessage()
+        ], 500);
+    }
 }
+
 
 
 //web
@@ -121,16 +182,32 @@ public function courseupdate(Request $request, $id)
     }
 
     //api
-    public function coursedelete($id)
+public function coursedelete($id)
 {
-    $course = Course::find($id);
-    // Delete the record
-    $course->delete();
+    try {
+        // Try to find course
+        $course = Course::findOrFail($id);
 
-    // Return success message
-   return response()->json([
-        'message' => 'Student deleted successfully'
-   ]);
+        // Delete the course
+        $course->delete();
+
+        return response()->json([
+            'message' => 'Course deleted successfully.'
+        ], 200);
+
+    } catch (ModelNotFoundException $e) {
+
+        return response()->json([
+            'message' => 'Course not found.'
+        ], 404);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'message' => 'Something went wrong.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
 }
 
 
