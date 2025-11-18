@@ -39,9 +39,17 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'duration' => 'nullable|string|max:255',
+            'material' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,zip|max:20480',
         ]);
  
-        Course::create($request->all());
+        $data = $request->only(['title', 'description', 'duration']);
+
+        if ($request->hasFile('material')) {
+            $path = $request->file('material')->store('course_materials', 'public');
+            $data['material'] = $path;
+        }
+
+        Course::create($data);
 
         return redirect()->route('courses.index')->with('success', 'Course created successfully!');
     }
@@ -118,9 +126,17 @@ public function coursestore(Request $request)
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'duration' => 'nullable|string|max:255',
+            'material' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,zip|max:20480',
         ]);
 
-        $course->update($request->all());
+        $data = $request->only(['title', 'description', 'duration']);
+
+        if ($request->hasFile('material')) {
+            $path = $request->file('material')->store('course_materials', 'public');
+            $data['material'] = $path;
+        }
+
+        $course->update($data);
 
         return redirect()->route('courses.index')->with('success', 'Course updated successfully!');
     }
@@ -171,8 +187,6 @@ public function courseupdate(Request $request, $id)
         ], 500);
     }
 }
-
-
 
 //web
     public function destroy(Course $course)

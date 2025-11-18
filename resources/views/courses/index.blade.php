@@ -186,10 +186,12 @@
                             <th>Title</th>
                             <th>Description</th>
                             <th>Duration</th>
+                            <th>Material</th>
                             <th>Created</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
+    
                     <tbody>
                         @foreach($courses as $course)
                             <tr>
@@ -205,7 +207,13 @@
                                         <span class="text-muted">Not specified</span>
                                     @endif
                                 </td>
+
+                                   <td>
+                                     {{$course->material ? 'yes' : 'no'}}                                
+                                  </td>
                                 <td>{{ $course->created_at->format('M d, Y') }}</td>
+                             
+
                                 <td>
                                     <div class="action-buttons">
                                         <a href="{{ route('courses.show', $course) }}" class="btn btn-view btn-sm">View</a>

@@ -7,7 +7,6 @@
     
     <!-- Fonts -->
     <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <style>
         body {
             font-family: 'Nunito', sans-serif;
@@ -135,7 +134,7 @@
             <p>Update course information</p>
         </div>
         
-        <form method="POST" action="{{ route('courses.update', $course) }}">
+        <form method="POST" action="{{ route('courses.update', $course) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             
@@ -184,6 +183,20 @@
                 >
                 @if($errors->has('duration'))
                     <div class="error-message">{{ $errors->first('duration') }}</div>
+                @endif
+            </div>
+            
+            <!-- Course Material -->
+            <div class="form-group">
+                <label for="material">Course Material (optional)</label>
+                <input 
+                    type="file" 
+                    id="material" 
+                    name="material" 
+                    class="{{ $errors->has('material') ? 'error' : '' }}"
+                >
+                @if($errors->has('material'))
+                    <div class="error-message">{{ $errors->first('material') }}</div>
                 @endif
             </div>
             

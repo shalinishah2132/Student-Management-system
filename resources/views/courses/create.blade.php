@@ -135,7 +135,7 @@
             <p>Enter course details below</p>
         </div>
         
-        <form method="POST" action="{{ route('courses.store') }}">
+        <form method="POST" action="{{ route('courses.store') }}" enctype="multipart/form-data">
             @csrf
             
             <!-- Course Title -->
@@ -186,6 +186,20 @@
                 @endif
             </div>
             
+            <!-- Course Material -->
+            <div class="form-group">
+                <label for="material">Course Material (optional)</label>
+                <input 
+                    type="file" 
+                    id="material" 
+                    name="material" 
+                    class="{{ $errors->has('material') ? 'error' : '' }}"
+                >
+                @if($errors->has('material'))
+                    <div class="error-message">{{ $errors->first('material') }}</div>
+                @endif
+            </div>
+            
             <button type="submit" class="submit-btn">Create Course</button>
         </form>
         
@@ -193,5 +207,5 @@
             <a href="{{ route('courses.index') }}">← Back to Courses List</a>
         </div>
     </div>
-</body>
+    </body>
 </html>

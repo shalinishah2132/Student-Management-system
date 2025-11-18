@@ -173,10 +173,21 @@
                                 <span style="color: #666;">Not specified</span>
                             @endif
                         </div>
+                        
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Material</div>
+                        <div class="detail-value">
+                            @if($course->material)
+                                <a href="{{ asset('storage/' . $course->material) }}" target="_blank">Download material</a>
+                            @else
+                                <span style="color: #666;">Not uploaded</span>
+                            @endif
+                        </div>
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">Created On</div>
-                        <div class="detail-value">{{ $course->created_at->format('M d, Y \a\t g:i A') }}</div>
+                        <div class="detail-value">{{ $course->created_at->format('M d, Y \\a\\t g:i A') }}</div>
                     </div>
                     @if($course->updated_at != $course->created_at)
                         <div class="detail-item">
@@ -186,6 +197,8 @@
                     @endif
                 </div>
             </div>
+
+        
             
             <!-- Description -->
             @if($course->description)
