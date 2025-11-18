@@ -1,10 +1,14 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\Api\AuthController;
+
 
 
 /*
@@ -18,12 +22,24 @@ use App\Http\Controllers\EnrollmentController;
 |
 */
 
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::get('/test', function() {
     return response()->json(['message' => 'API is working!']);
+});
+
+
+// Public routes
+Route::post('/register', [AuthController::class, 'accountregister']);
+Route::post('/login', [AuthController::class, 'accountlogin']);
+
+// Protected routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'accountlogout']);
+    
 });
 
 //student token
