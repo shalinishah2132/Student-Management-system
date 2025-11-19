@@ -179,7 +179,7 @@
                         <div class="detail-label">Material</div>
                         <div class="detail-value">
                             @if($course->material)
-                                <a href="{{ asset('storage/' . $course->material) }}" target="_blank">Download material</a>
+                                <a href="{{ asset('storage/' . $course->material) }}" target="_blank">Preview</a>
                             @else
                                 <span style="color: #666;">Not uploaded</span>
                             @endif

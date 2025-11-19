@@ -10,28 +10,38 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     // Register User
-    public function accountregister(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password)
-        ]);
-
-        $token = $user->createToken('API Token')->plainTextToken;
-
+public function accountregister(Request $request)
+{
+    // Manual check
+    if (User::where('email', $request->email)->exists()) {
         return response()->json([
-            'message' => 'Registered successfully',
-            'user' => $user,
-            'token' => $token
-        ], 201);
+            'message' => 'Email address already in use.'
+        ], 422);
     }
+
+    // Validation
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email',
+        'password' => 'required|min:6'
+    ]);
+
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password)
+    ]);
+
+    $token = $user->createToken('API Token')->plainTextToken;
+
+    return response()->json([
+        'message' => 'Registered successfully',
+        'user' => $user,
+        'token' => $token
+    ], 201);
+}
+
+
 
     // Login api
 public function accountlogin(Request $request)
@@ -102,4 +112,5 @@ public function accountlogin(Request $request)
 
         return response()->json(['message' => 'Logged out successfully']);
     }
+
 }

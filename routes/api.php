@@ -8,6 +8,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\RoleController;
 
 
 
@@ -35,6 +36,7 @@ Route::get('/test', function() {
 // Public routes
 Route::post('/register', [AuthController::class, 'accountregister']);
 Route::post('/login', [AuthController::class, 'accountlogin']);
+Route::post('/assignrole', [RoleController::class, 'assignRole']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {

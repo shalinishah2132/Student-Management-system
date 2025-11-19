@@ -208,9 +208,13 @@
                                     @endif
                                 </td>
 
-                                   <td>
-                                     {{$course->material ? 'yes' : 'no'}}                                
-                                  </td>
+                                <td>
+                                    @if($course->material)
+                                        <a href="{{ asset('storage/' . $course->material) }}" target="_blank">Preview</a>
+                                    @else
+                                        <span class="text-muted">Not uploaded</span>
+                                    @endif
+                                </td>
                                 <td>{{ $course->created_at->format('M d, Y') }}</td>
                              
 
